@@ -1,0 +1,4 @@
+skins used:
+	METAL : https://github.com/raeleus/skin-composer
+	FROZEN : https://github.com/czyzby/gdx-skins
+	COMIC : https://github.com/czyzby/gdx-skins
