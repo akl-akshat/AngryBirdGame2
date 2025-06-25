@@ -10,16 +10,16 @@ public class HelperMethods {
         }
 
         int boxWidth, boxHeight, boxX, boxY;
-        float r = 184f;
-        float g = 115f;
-        float b = 51f;
+        float r = 173f;
+        float g = 191f;
+        float b = 84f;
         boxWidth = (2*offset)+buttonWidth;
         boxHeight = (numberOfButtons*buttonHeight)+(2*(numberOfButtons-1)*pad)+(2*offset);
-        boxX = 960 - (buttonWidth/2 + offset);
-        boxY = 540 - ((buttonHeight*numberOfButtons/2)+(numberOfButtons*pad-pad)+offset);
+        boxX = 890 - (buttonWidth/2 + offset);
+        boxY = 740 - ((buttonHeight*numberOfButtons/2)+(numberOfButtons*pad-pad)+offset);
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(r/255f, g/255f, b/255f, 1);  // Fill color (red)
+        shapeRenderer.setColor(r/355f, g/845f, b/925f, 2);  // Fill color (red)
         shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight);
         shapeRenderer.end();
 

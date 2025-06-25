@@ -10,56 +10,86 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 import static angry_bird.utils.Constants.UI.skin.BUTTON_SKIN;
 import static angry_bird.utils.Constants.UI.MenuScreen.*;
 
 public class MainMenuScreen implements Screen {
-    private Main main;
-    private Texture backgroundImage;
-    private Stage stage;
+    private Main mainApp;
+    private Texture backgroundTexture;
+    private Stage mainStage;
+
     private TextButton playButton;
-    private TextButton quitButton;
-
-    public MainMenuScreen(Main main){
-        this.main = main;
-        setupStageForMenuButtons();
-        setupBackgroundImageAndButtons();
+    private TextButton exitButton;
+    private TextButton settingsButton;
+    private TextButton rewardsButton;
+//    private Music backgroundMusic;
+    public MainMenuScreen(Main mainApp) {
+        this.mainApp = mainApp;
+//        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/background.mp3"));
+        initializeStage();
+        initializeBackground();
+        initializeButtons();
+        // Start background music
+//        backgroundMusic.setLooping(true);
+//        backgroundMusic.play();
+        System.out.println("I am background");
+        setupButtonListeners();
     }
 
-    private void setupStageForMenuButtons(){
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+    private void initializeStage() {
+        mainStage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(mainStage);
     }
 
-    private void setupBackgroundImageAndButtons(){
-        backgroundImage = new Texture(BACKGROUND);
-        Skin skin = new Skin(Gdx.files.internal(BUTTON_SKIN));
-
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-        table.defaults().width(200).height(70).padTop(900).padBottom(100).padLeft(100).padRight(100);
-
-        playButton = new TextButton("PLAY",skin);
-        quitButton = new TextButton("QUIT", skin);
-
-        table.add(playButton);
-        table.add(quitButton);
-
-        addListenerForButtons();
+    private void initializeBackground() {
+        backgroundTexture = new Texture(BACKGROUND);
     }
 
-    private void addListenerForButtons() {
+    private void initializeButtons() {
+        Skin buttonSkin = new Skin(Gdx.files.internal(BUTTON_SKIN));
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        mainStage.addActor(buttonTable);
+        buttonTable.defaults().width(200).height(70).pad(10);
+
+        playButton = new TextButton("PLAY", buttonSkin);
+        settingsButton = new TextButton("SETTINGS", buttonSkin);
+        rewardsButton = new TextButton("REWARDS", buttonSkin);
+        exitButton = new TextButton("EXIT", buttonSkin);
+
+        buttonTable.add(playButton).row();
+        buttonTable.add(settingsButton).row();
+        buttonTable.add(rewardsButton).row();
+        buttonTable.add(exitButton).row();
+    }
+
+    private void setupButtonListeners() {
         playButton.addListener(event -> {
-            if(playButton.isPressed()){
-                main.setScreen(new GamesaveScreen(main));
+            if (playButton.isPressed()) {
+                mainApp.setScreen(new GamesaveScreen(mainApp));
             }
             return true;
         });
 
-        quitButton.addListener(event -> {
-            if(quitButton.isPressed()){
+        settingsButton.addListener(event -> {
+            if (settingsButton.isPressed()) {
+                mainApp.setScreen(new SettingsScreen(mainApp));
+            }
+            return true;
+        });
+
+        rewardsButton.addListener(event -> {
+            if (rewardsButton.isPressed()) {
+                mainApp.setScreen(new RewardsScreen(mainApp));
+            }
+            return true;
+        });
+
+        exitButton.addListener(event -> {
+            if (exitButton.isPressed()) {
                 Gdx.app.exit();
             }
             return true;
@@ -67,45 +97,38 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
-    }
+    public void show() {}
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        main.spriteBatch.begin();
-        main.spriteBatch.draw(backgroundImage, 0, 0);
-        main.spriteBatch.end();
+        mainApp.spriteBatch.begin();
+        mainApp.spriteBatch.draw(backgroundTexture, 0, 0);
+        mainApp.spriteBatch.end();
 
-        stage.act();
-        stage.draw();
+        mainStage.act();
+        mainStage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        mainStage.getViewport().update(width, height, true);
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
-        stage.dispose();
-        backgroundImage.dispose();
+        mainStage.dispose();
+        backgroundTexture.dispose();
+//        backgroundMusic.dispose();
     }
 }

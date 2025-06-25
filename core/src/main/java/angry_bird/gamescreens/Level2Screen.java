@@ -1,11 +1,9 @@
 package angry_bird.gamescreens;
 
 import angry_bird.main.Main;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -21,14 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,28 +29,24 @@ import java.util.Queue;
 
 import static angry_bird.utils.Constants.UI.skin.BUTTON_SKIN;
 
-public class Level1Screen implements Screen {
+public class Level2Screen implements Screen {
     private static final Logger logger = new Logger(Level1Screen.class.getName(), Logger.DEBUG);
     private static final float PPM = 100; // Pixels per meter
     private Main main;
     private Stage stage;
     private World world;
-    private int load;
+    int load;
     private Box2DDebugRenderer debugRenderer;
     private Slingshot slingshot;
     private ProjectilePathSimulator projectilePathSimulator;
     private ShapeRenderer shapeRenderer;
     private Queue<Bird> birdQueue;
-    private boolean victoryTriggered = false;
-    private boolean gameOverTriggered = false;
-    private float transitionTimer = 0;
     //private Music backgroundMusic;
     private Sound slingshotStretchSound;
     private Sound birdLaunchSound;
     private Sound pigHitSound;
     private Sound victorySound;
     private Sound gameOverSound;
-
 
     // Game assets
     private Texture backgroundTexture;
@@ -67,18 +56,15 @@ public class Level1Screen implements Screen {
     private boolean isPaused = false;
     private Table pauseMenuTable;
 
-    private Block block1, block2, block3, block4, block5;
-    private angry_bird.gamescreens.Level1Screen.Pig pig1;
-    private List<angry_bird.gamescreens.Level1Screen.Block> blocks;
-    private List<angry_bird.gamescreens.Level1Screen.Pig> pigs;
-    private int level;
-    public Level1Screen(Main main, int load) {
+    private Block block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25,block26;
+    private Pig pig1, pig2;
+    private boolean victoryTriggered = false;
+    private boolean gameOverTriggered = false;
+    private float transitionTimer = 0;
+
+    public Level2Screen(Main main, int load) {
         this.main = main;
         this.load = load;
-        this.pigs = new ArrayList<>(); // Initialize pigs
-        this.blocks = new ArrayList<>();
-        this.birdQueue = new LinkedList<>();
-        // Load sounds and music
         //backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/background.mp3"));
         slingshotStretchSound = Gdx.audio.newSound(Gdx.files.internal("audio/slingshot_stretch.mp3"));
         birdLaunchSound = Gdx.audio.newSound(Gdx.files.internal("audio/bird_launch.mp3"));
@@ -89,24 +75,16 @@ public class Level1Screen implements Screen {
         // Start background music
         //backgroundMusic.setLooping(true);
         //backgroundMusic.play();
-
-        System.out.println("load:" + load);
         try {
             setupStage();
             setupWorld();
             setupTextures();
             setupSlingshot();
-            if (load == 1) {
-                loadGameState("game1.dat");
-                pig1 = pigs.get(0);
-            }
-            else {
-                setupBirds();
-                setupBirdQueue();
-                setupBlocks();
-                setupPigs();
-            }
+            setupBirds();
+            setupBirdQueue();
+            setupBlocks();
             setupGroundAndWalls();
+            setupPigs();
             setupButtons();
             projectilePathSimulator = new ProjectilePathSimulator();
             shapeRenderer = new ShapeRenderer();
@@ -132,6 +110,7 @@ public class Level1Screen implements Screen {
     private boolean isStretching() {
         return slingshot != null && slingshot.isStretching();
     }
+
 
     private void setupTextures() {
         backgroundTexture = new Texture("screens/level_1bg/level1.png");
@@ -165,6 +144,7 @@ public class Level1Screen implements Screen {
         bird3 = new Bird(world, birdTexture3, new Vector2(330, 328));
 
         // Initialize the bird queue
+        birdQueue = new LinkedList<>();
         birdQueue.add(bird1);
         birdQueue.add(bird2);
         birdQueue.add(bird3);
@@ -181,23 +161,43 @@ public class Level1Screen implements Screen {
         Texture woodblockTexture = new Texture("blocks/woodblock.jpg");
         Texture glassblockTexture = new Texture("blocks/glassblock.jpg");
         Texture stoneblockTexture = new Texture("blocks/stoneblock.jpg");
-        block1 = new Block(world, woodblockTexture, new Vector2(1200, 300), 30, 70);
-        // check the block type whether block glass or wood ans set health
-        block2 = new Block(world, woodblockTexture, new Vector2(1350, 300), 30, 70);
-        block3 = new Block(world, stoneblockTexture, new Vector2(1350, 340), 30, 70);
-        block4 = new Block(world, stoneblockTexture, new Vector2(1200, 340),30,70);
-        block5 = new Block(world, glassblockTexture, new Vector2(1250, 350),200,30);
-        blocks.add(block1);
-        blocks.add(block2);
-        blocks.add(block3);
-        blocks.add(block4);
-        blocks.add(block5);
+        block1 = new Block(world, woodblockTexture, new Vector2(1100, 300), 50, 50);
+        block2 = new Block(world, woodblockTexture, new Vector2(1100, 320), 50, 50);
+        block3 = new Block(world, stoneblockTexture, new Vector2(1100, 340), 50, 50);
+        block4 = new Block(world, stoneblockTexture, new Vector2(1100, 350),50,50);
+        block5 = new Block(world, glassblockTexture, new Vector2(1100, 360),50,50);
+        //new
+        block6 = new Block(world, woodblockTexture, new Vector2(1100, 370), 50, 50);
+        block7 = new Block(world, woodblockTexture, new Vector2(1150, 300), 50, 50);
+        block8 = new Block(world, stoneblockTexture, new Vector2(1150, 320), 50, 50);
+        block9 = new Block(world, stoneblockTexture, new Vector2(1150, 340),50,50);
+        block10 = new Block(world, glassblockTexture, new Vector2(1150, 350),50,50);
+        block11 = new Block(world, woodblockTexture, new Vector2(1200, 300), 50, 50);
+        block12 = new Block(world, stoneblockTexture, new Vector2(1200, 320), 50, 50);
+        block13= new Block(world, stoneblockTexture, new Vector2(1200, 340),50,50);
+        block14 = new Block(world, glassblockTexture, new Vector2(1200, 350),50,50);
+        block15 = new Block(world, woodblockTexture, new Vector2(1260, 300), 50, 50);
+        block16 = new Block(world, stoneblockTexture, new Vector2(1260, 320), 50, 50);
+        block17= new Block(world, stoneblockTexture, new Vector2(1260, 340),50,50);
+        block18 = new Block(world, glassblockTexture, new Vector2(1260, 350),50,50);
+        block19 = new Block(world, woodblockTexture, new Vector2(1260, 300), 50, 50);
+        block20 = new Block(world, stoneblockTexture, new Vector2(1260, 320), 50, 50);
+        block21= new Block(world, stoneblockTexture, new Vector2(1260, 340),50,50);
+        block22 = new Block(world, glassblockTexture, new Vector2(1260, 350),50,50);
+
+        block23 = new Block(world, woodblockTexture, new Vector2(1360, 300), 50, 50);
+        block24 = new Block(world, stoneblockTexture, new Vector2(1360, 320), 50, 50);
+        block25= new Block(world, stoneblockTexture, new Vector2(1360, 340),50,50);
+        block26 = new Block(world, glassblockTexture, new Vector2(1360, 350),50,50);
     }
 
     private void setupPigs() {
-        Texture pigTexture = new Texture("pigs/KPSprite.png");
-        pig1 = new angry_bird.gamescreens.Level1Screen.Pig(world, pigTexture, new Vector2(1250, 300));
-        pigs.add(pig1);
+        Texture ForemanpigTexture = new Texture("pigs/Foreman_Pig.png");
+        Texture mediumpigTexture = new Texture("pigs/Piggy_medium.png");
+        Texture scaredpigTexture = new Texture("pigs/Pig_scared_2.png");
+        Texture KPpigTexture = new Texture("pigs/KPSprite.png");
+        pig1 = new Pig(world, ForemanpigTexture, new Vector2(1250, 370));
+        pig2 = new Pig(world, mediumpigTexture, new Vector2(1300, 300));
     }
 
     private void setupButtons() {
@@ -280,16 +280,11 @@ public class Level1Screen implements Screen {
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton restartButton = new TextButton("Restart", skin);
         TextButton mainMenuButton = new TextButton("Main Menu", skin);
-        TextButton saveButton = new TextButton("Save", skin);
-        TextButton loadButton = new TextButton("Load", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
         pauseMenuTable.add(resumeButton).pad(10).row();
         pauseMenuTable.add(restartButton).pad(10).row();
         pauseMenuTable.add(mainMenuButton).pad(10).row();
-
-        pauseMenuTable.add(saveButton).pad(10).row();
-        pauseMenuTable.add(loadButton).pad(10).row();
         pauseMenuTable.add(exitButton).pad(10).row();
 
         stage.addActor(pauseMenuTable);
@@ -306,7 +301,7 @@ public class Level1Screen implements Screen {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 try {
-                    main.setScreen(new Level1Screen(main, load));
+                    main.setScreen(new Level2Screen(main, load));
                 } catch (Exception e) {
                     logger.error("Error restarting Level1Screen", e);
                 }
@@ -321,19 +316,6 @@ public class Level1Screen implements Screen {
                 } catch (Exception e) {
                     logger.error("Error transitioning to MainMenuScreen", e);
                 }
-            }
-        });
-        saveButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                saveGameState("game1.dat");
-                main.setScreen(new MainMenuScreen(main));
-            }
-        });
-        loadButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                loadGameState("game1.dat");
             }
         });
 
@@ -356,10 +338,10 @@ public class Level1Screen implements Screen {
                 Object userDataA = contact.getFixtureA().getBody().getUserData();
                 Object userDataB = contact.getFixtureB().getBody().getUserData();
 
-                if (userDataA instanceof Bird && userDataB instanceof angry_bird.gamescreens.Pig) {
-                    handleBirdHitsPig((Bird) userDataA, (angry_bird.gamescreens.Pig) userDataB);
-                } else if (userDataA instanceof angry_bird.gamescreens.Pig && userDataB instanceof Bird) {
-                    handleBirdHitsPig((Bird) userDataB, (angry_bird.gamescreens.Pig) userDataA);
+                if (userDataA instanceof Bird && userDataB instanceof Pig) {
+                    handleBirdHitsPig((Bird) userDataA, (Pig) userDataB);
+                } else if (userDataA instanceof Pig && userDataB instanceof Bird) {
+                    handleBirdHitsPig((Bird) userDataB, (Pig) userDataA);
                 }
             }
 
@@ -377,153 +359,15 @@ public class Level1Screen implements Screen {
         });
     }
 
-    private void checkForTransitions(float delta) {
-        boolean allPigsDestroyed = pig1.isMarkedForRemoval();
-        boolean allBirdsUsed = birdQueue.isEmpty();
-
-        if (allPigsDestroyed && !victoryTriggered) {
-            // Trigger victory
-            victoryTriggered = true;
-            transitionTimer = 0;
-        } else if (allBirdsUsed && !allPigsDestroyed && !gameOverTriggered) {
-            // Trigger game over
-            gameOverTriggered = true;
-            transitionTimer = 0;
-        }
-
-        // Handle transitions
-        if (victoryTriggered || gameOverTriggered) {
-            transitionTimer += delta;
-            if (transitionTimer >= 2.0f) {
-                if (victoryTriggered) {
-                    main.setScreen(new VictoryScreen(main, this));
-                    victorySound.play();
-                } else if (gameOverTriggered) {
-                    main.setScreen(new GameOverScreen(main, this));
-                    gameOverSound.play();
-                }
-            }
-        }
-    }
-
-
-    public void saveGameState(String filePath) {
-        GameState gameState = new GameState();
-        gameState.level = 1; // Assuming this is level 1
-        gameState.remainingBirds = birdQueue.size();
-
-        // Debug: Print general information about the state to be saved
-        System.out.println("Saving game state...");
-        System.out.println("Level: " + gameState.level);
-        System.out.println("Remaining Birds: " + gameState.remainingBirds);
-
-        // Save Pigs
-        for (Pig pig : pigs) {
-            Vector2 position = pig.getBody().getPosition();
-            gameState.pigs.add(new GameState.PigState(position.x * PPM, position.y * PPM, (int) pig.getHealth(),pig.type));
-            // Debug: Print pig coordinates and health
-            System.out.println("Saving Pig - Position: (" + position.x * PPM + ", " + position.y * PPM + "), Health: " + pig.getHealth());
-        }
-
-        // Save Blocks
-        for (Block block : blocks) {
-            Vector2 position = block.getBody().getPosition();
-            gameState.blocks.add(new GameState.BlockState(position.x * PPM, position.y * PPM, block.getType()));
-            // Debug: Print block coordinates and type
-            System.out.println("Saving Block - Position: (" + position.x * PPM + ", " + position.y * PPM + "), Type: " + block.getType());
-        }
-
-        // Save Birds
-        for (Bird bird : birdQueue) {
-            Vector2 position = bird.getBody().getPosition();
-            gameState.birds.add(new GameState.BirdState(position.x * PPM, position.y * PPM, bird.getType()));
-            // Debug: Print bird coordinates and type
-            System.out.println("Saving Bird - Position: (" + position.x * PPM + ", " + position.y * PPM + "), Type: " + bird.getType());
-        }
-
-        ObjectOutputStream out = null;
-        try {
-            // Use Gdx.files.local to create a FileHandle
-            FileHandle fileHandle = Gdx.files.local(filePath);
-            System.out.println("Saving to file: " + fileHandle.file().getAbsolutePath());
-            // Create ObjectOutputStream with FileHandle's output stream
-            out = new ObjectOutputStream(fileHandle.write(false)); // false -> overwrite existing file
-            out.writeObject(gameState); // Write the GameState object
-
-            System.out.println("Game state has been serialized and saved to: " + fileHandle.file().getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle exceptions appropriately
-        } finally {
-            // Close the ObjectOutputStream
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace(); // Handle closing exceptions
-                }
-            }
-        }
-    }
-
-
-
-
-    public void loadGameState(String filePath) {
-        FileHandle fileHandle = Gdx.files.local(filePath);
-        System.out.println("Reading from "+fileHandle.file().getAbsolutePath());
-        if (fileHandle.exists()) {
-            ObjectInputStream in = null;
-            try {
-                // Open the file for reading using ObjectInputStream
-                in = new ObjectInputStream(fileHandle.read());
-                GameState gameState = (GameState) in.readObject(); // Read the serialized object
-
-                if (gameState != null) {
-                    // Load level and remaining birds
-                    this.level = gameState.level;
-                    this.birdQueue.clear();
-                    for (GameState.BirdState birdState : gameState.birds) {
-                        Bird bird = new Bird(world, new Texture(birdState.type), new Vector2((float) birdState.x, (float) birdState.y));
-                        birdQueue.add(bird);
-                    }
-
-                    // Load pigs
-                    this.pigs.clear();
-                    for (GameState.PigState pigState : gameState.pigs) {
-                        System.out.println(gameState.pigs.size());
-                        System.out.println("pos: " + pigState.x + " " + pigState.y);
-                        Pig pig = new Pig(world, new Texture(pigState.type), new Vector2((float) pigState.x, (float) pigState.y));
-                        pig.setHealth(pigState.durability);
-                        this.pigs.add(pig);
-                    }
-
-                    // Load blocks
-                    this.blocks.clear();
-                    for (GameState.BlockState blockState : gameState.blocks) {
-                        Block block = new Block(world, new Texture(  blockState.type), new Vector2((float) blockState.x, (float) blockState.y), 30, 70);
-                        this.blocks.add(block);
-                    }
-
-                    System.out.println("Game state has been loaded successfully.");
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace(); // Handle errors appropriately
-            } finally {
-                // Close the ObjectInputStream
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace(); // Handle closing exceptions
-                    }
-                }
-            }
-        } else {
-            System.out.println("The file does not exist: " + filePath);
-        }
-    }
-
-    private void handleBirdHitsPig(Bird bird, angry_bird.gamescreens.Pig pig) {
+    //    private void handleBirdHitsPig(Bird bird, Pig pig) {
+//        // Calculate damage based on bird's velocity and power
+//        Vector2 velocity = bird.getBody().getLinearVelocity();
+//        float birdSpeed = velocity.len();
+//        float damage = birdSpeed * bird.getPower();
+//
+//        pig.applyDamage(damage); // Apply damage to the pig
+//    }
+    private void handleBirdHitsPig(Bird bird, Pig pig) {
         Vector2 velocity = bird.getBody().getLinearVelocity();
         float birdSpeed = velocity.len();
         float damage = birdSpeed * bird.getPower();
@@ -532,9 +376,39 @@ public class Level1Screen implements Screen {
 
         if (pig.isMarkedForRemoval()) {
             pigsToRemove.add(pig); // Mark pig for removal
-            pigHitSound.play();
+            pigHitSound.play();    // Play pig hit sound
         }
     }
+
+    private void checkForTransitions(float delta) {
+        boolean allPigsDestroyed = pig1.isMarkedForRemoval()&& pig2.isMarkedForRemoval;
+        boolean allBirdsUsed = birdQueue.isEmpty();
+
+        if (allPigsDestroyed && !victoryTriggered) {
+            // Trigger victory
+            victoryTriggered = true;
+            transitionTimer = 0;
+            victorySound.play();
+        } else if (allBirdsUsed && !allPigsDestroyed && !gameOverTriggered) {
+            // Trigger game over
+            gameOverTriggered = true;
+            transitionTimer = 0;
+            gameOverSound.play();
+        }
+
+        // Handle transitions
+        if (victoryTriggered || gameOverTriggered) {
+            transitionTimer += delta;
+            if (transitionTimer >= 2.0f) {
+                if (victoryTriggered) {
+                    main.setScreen(new VictoryScreen(main, this));
+                } else if (gameOverTriggered) {
+                    main.setScreen(new GameOverScreen(main, this));
+                }
+            }
+        }
+    }
+
 
     @Override
     public void show() {
@@ -543,176 +417,110 @@ public class Level1Screen implements Screen {
     // Add a field to track the bird's launch time
     private float birdLaunchTime = 0;
     private boolean isBirdLaunched = false;
-    private List<angry_bird.gamescreens.Pig> pigsToRemove = new ArrayList<>();
+    private List<Pig> pigsToRemove = new ArrayList<>();
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-        world.step(1 / 60f, 6, 2);
-        main.spriteBatch.begin();
-
-        main.spriteBatch.draw(backgroundTexture, 0, 0);
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             togglePauseMenu();
         }
-        if (!birdQueue.isEmpty()) {
-            Bird currentBird = birdQueue.peek();
-            if (currentBird != null) currentBird.render(main.spriteBatch);
-        }
-        slingshot.render(main.spriteBatch);
 
-        if (Gdx.input.isTouched()) {
-            Vector2 touchPos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+        if (!isPaused) {
+            // Draw background
+            main.spriteBatch.begin();
+            main.spriteBatch.draw(backgroundTexture, 0, 0);
 
-            if (Gdx.input.justTouched()) {
-                slingshot.startStretching(touchPos);// Start stretching
-                slingshotStretchSound.play();
-            } else {
-                slingshot.updateStretching(touchPos); // Update bird position dynamically
+            // Draw blocks, pigs, and the current bird
+            renderObstacles();
+            if (!birdQueue.isEmpty()) {
+                Bird currentBird = birdQueue.peek();
+                currentBird.render(main.spriteBatch);
             }
-        } else if (slingshot.isStretching() && !isBirdLaunched) {
-            slingshot.release(); // Release slingshot and calculate projectile motion
-            birdLaunchSound.play();
-            birdLaunchTime = 0; // Reset the launch timer
-            isBirdLaunched = true;
-        }
+            pig1.render(main.spriteBatch);
+            pig2.render(main.spriteBatch);
+            // Draw slingshot
+            slingshot.render(main.spriteBatch);
+            main.spriteBatch.end();
 
-        if (!birdQueue.isEmpty()) {
-            Bird currentBird = birdQueue.peek();
-            currentBird.update();
+            // Handle slingshot stretching and bird launch
+            if (Gdx.input.isTouched()) {
+                Vector2 touchPos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-            // Track the time since launch
-            if (isBirdLaunched) {
-                birdLaunchTime += delta;
-                Vector2 velocity = currentBird.getBody().getLinearVelocity();
-                boolean isSlow = velocity.len2() < 0.04; // Velocity threshold for "stopping"
+                if (Gdx.input.justTouched()) {
+                    slingshot.startStretching(touchPos);
+                    slingshotStretchSound.play();// Start stretching
+                } else {
+                    slingshot.updateStretching(touchPos); // Update bird position dynamically
+                }
+            } else if (slingshot.isStretching() && !isBirdLaunched) {
+                slingshot.release(); // Release slingshot and calculate projectile motion
+                birdLaunchSound.play();
+                birdLaunchTime = 0; // Reset the launch timer
+                isBirdLaunched = true;
+            }
 
-                // Remove bird if it's been on-screen for enough time and is nearly stopped
-                if (birdLaunchTime >= 5.0f || isSlow) {
-                    currentBird.dispose(); // Clean up the current bird
-                    birdQueue.poll(); // Remove it from the queue
-                    isBirdLaunched = false; // Reset the launch flag
 
-                    // Attach the next bird, if any
-                    if (!birdQueue.isEmpty()) {
-                        Bird nextBird = birdQueue.peek();
-                        slingshot.attachBird(nextBird.getBody());
+
+            // Update the physics world
+            world.step(1 / 60f, 6, 2);
+            checkForTransitions(delta);
+            if (!birdQueue.isEmpty()) {
+                birdQueue.peek().update(); // Update the current bird
+            }
+            pig1.update();
+            pig2.update();
+            // Safely remove pigs marked for removal
+            processRemovals();
+
+
+
+            // Update the current bird
+            if (!birdQueue.isEmpty()) {
+                Bird currentBird = birdQueue.peek();
+                currentBird.update();
+
+                // Track the time since launch
+                if (isBirdLaunched) {
+                    birdLaunchTime += delta;
+                    Vector2 velocity = currentBird.getBody().getLinearVelocity();
+                    boolean isSlow = velocity.len2() < 0.04; // Velocity threshold for "stopping"
+
+                    // Remove bird if it's been on-screen for enough time and is nearly stopped
+                    if (birdLaunchTime >= 5.0f || isSlow) {
+                        currentBird.dispose(); // Clean up the current bird
+                        birdQueue.poll(); // Remove it from the queue
+                        isBirdLaunched = false; // Reset the launch flag
+
+                        // Attach the next bird, if any
+                        if (!birdQueue.isEmpty()) {
+                            Bird nextBird = birdQueue.peek();
+                            slingshot.attachBird(nextBird.getBody());
+                        }
                     }
                 }
             }
 
-            if (!birdQueue.isEmpty()) {
-                birdQueue.peek().update(); // Update the current bird
-            }
+            // Update pigs
+            pig1.update();
+            pig2.update();
 
-
-        }
-
-        for (Pig pig : pigs) {
-            if (pig != null && pig.sprite != null){
-                pig.update();
-                pig.render(main.spriteBatch);
-//                if (pig.isMarkedForRemoval()) {
-//                    pigsToRemove.add(pig);
-//                }
-            }
-
-        }
-        for (Bird bird : birdQueue) {
-            if (bird != null) {
-                bird.update();
-                bird.render(main.spriteBatch);
+            // Calculate and render the projectile path (if stretching)
+            if (isStretching()) {
+                Vector2 launchVelocity = slingshot.calculateLaunchVelocity(10.0f);
+                projectilePathSimulator.calculatePath(new Vector2(450, 300), launchVelocity, -9.8f, 0.1f);
+                projectilePathSimulator.renderPath(shapeRenderer);
             }
         }
-        for (Block blk : blocks) {
-            if (blk != null && blk.sprite != null) blk.render(main.spriteBatch);
-        }
-
-
-        processRemovals();
-
-        //check for transition to next screen
-        checkForTransitions(delta);
-
-        if (isStretching()) {
-            Vector2 launchVelocity = slingshot.calculateLaunchVelocity(10.0f);
-            projectilePathSimulator.calculatePath(new Vector2(450, 300), launchVelocity, -9.8f, 0.1f);
-            projectilePathSimulator.renderPath(shapeRenderer);
-        }
-
-
-
 
         // Render the stage and debug information
-        main.spriteBatch.end();
         stage.act();
         stage.draw();
-//        debugRenderer.render(world, stage.getCamera().combined.scl(100));
-
+        debugRenderer.render(world, stage.getCamera().combined.scl(100));
     }
 
-
-
-//    public void render(float delta) {
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//
-//        world.step(1 / 60f, 6, 2);
-//
-//        main.spriteBatch.begin(); // Begin the sprite batch
-//
-//        main.spriteBatch.draw(backgroundTexture, 0, 0);
-//
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-//            togglePauseMenu();
-//        }
-//
-//        if (!birdQueue.isEmpty()) {
-//            Bird currentBird = birdQueue.peek();
-//            if (currentBird != null) currentBird.render(main.spriteBatch);
-//        }
-//
-//        slingshot.render(main.spriteBatch);
-//
-//        for (Block block : blocks) {
-//            block.render(main.spriteBatch);
-//        }
-//
-//        for (Pig pig : pigs) {
-//            pig.render(main.spriteBatch);
-//        }
-//
-//        main.spriteBatch.end(); // End the sprite batch
-//
-//        if (Gdx.input.isTouched()) {
-//            Vector2 touchPos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-//
-//            if (Gdx.input.justTouched()) {
-//                slingshot.startStretching(touchPos); // Start stretching
-//            } else {
-//                slingshot.updateStretching(touchPos); // Update stretching
-//            }
-//        } else if (slingshot.isStretching() && !isBirdLaunched) {
-//            slingshot.release(); // Release slingshot and calculate projectile motion
-//            birdLaunchTime = 0; // Reset the launch timer
-//            isBirdLaunched = true;
-//        }
-//
-//        processRemovals();
-//
-//        // Check for transition to next screen
-//        checkForTransitions(delta);
-//
-//        // Render the stage and debug information
-//        stage.act();
-//        stage.draw();
-//        debugRenderer.render(world, stage.getCamera().combined.scl(100));
-//    }
-
-
-
     private void processRemovals() {
-        for (angry_bird.gamescreens.Pig pig : pigsToRemove) {
+        for (Pig pig : pigsToRemove) {
             pig.destroyBody();
         }
         pigsToRemove.clear();
@@ -723,7 +531,33 @@ public class Level1Screen implements Screen {
         block3.render(main.spriteBatch);
         block4.render(main.spriteBatch);
         block5.render(main.spriteBatch);
-        pig1.render(main.spriteBatch); // Render the pig
+        block6.render(main.spriteBatch);
+        block7.render(main.spriteBatch);
+        block8.render(main.spriteBatch);
+        block9.render(main.spriteBatch);
+        block10.render(main.spriteBatch);
+        block11.render(main.spriteBatch);
+        block12.render(main.spriteBatch);
+        block13.render(main.spriteBatch);
+        block14.render(main.spriteBatch);
+
+        block15.render(main.spriteBatch);
+        block16.render(main.spriteBatch);
+        block17.render(main.spriteBatch);
+        block18.render(main.spriteBatch);
+
+        block19.render(main.spriteBatch);
+        block20.render(main.spriteBatch);
+        block21.render(main.spriteBatch);
+        block22.render(main.spriteBatch);
+
+        block23.render(main.spriteBatch);
+        block24.render(main.spriteBatch);
+        block25.render(main.spriteBatch);
+        block26.render(main.spriteBatch);
+
+        pig1.render(main.spriteBatch);
+        pig2.render(main.spriteBatch);// Render the pig
     }
 
     @Override
@@ -733,12 +567,10 @@ public class Level1Screen implements Screen {
 
     @Override
     public void pause() {
-        saveGameState("game1.dat");
     }
 
     @Override
     public void resume() {
-        loadGameState("game1.dat");
     }
 
     @Override
@@ -757,7 +589,6 @@ public class Level1Screen implements Screen {
         pigHitSound.dispose();
         victorySound.dispose();
         gameOverSound.dispose();
-
         for (Bird bird : birdQueue) {
             bird.dispose();
         }
@@ -772,13 +603,12 @@ public class Level1Screen implements Screen {
             return body;
         }
     }
+
     public class Block {
         private static final float PPM = 100; // Pixels per meter for Box2D scaling
         private World world;
         private Body body;
         private Sprite sprite;
-        private String type;
-
 
         /**
          * Constructor for the Block class.
@@ -790,10 +620,7 @@ public class Level1Screen implements Screen {
          * @param height   The height of the block in pixels.
          */
         public Block(World world, Texture texture, Vector2 position, float width, float height) {
-            this.type = texture.toString(); // Example type assignment
             this.sprite = new Sprite(texture);
-            this.sprite.setPosition(position.x, position.y);
-
 
             // Create the block's physics body
             BodyDef bodyDef = new BodyDef();
@@ -832,12 +659,6 @@ public class Level1Screen implements Screen {
         public void dispose() {
             sprite.getTexture().dispose();
         }
-        public Body getBody() {
-            return body;
-        }
-        public String getType() {
-            return type;
-        }
     }
 
 
@@ -849,7 +670,6 @@ public class Level1Screen implements Screen {
         private float health;
         private boolean isMarkedForRemoval = false;
         private boolean isDestroyed; // To track if the pig has been destroyed
-        public String type;
         /**
          * Constructor for the Pig class.
          *
@@ -860,7 +680,7 @@ public class Level1Screen implements Screen {
         public Pig(World world, Texture texture, Vector2 position) {
             this.health = 100f; // Set the pig's initial health
             this.isDestroyed = false;
-            this.type = texture.toString();
+
             // Create the pig's physics body
             this.sprite = new Sprite(texture);
             BodyDef bodyDef = new BodyDef();
@@ -936,18 +756,6 @@ public class Level1Screen implements Screen {
                 body = null;
             }
         }
-
-        public Body getBody() {
-            return body;
-        }
-
-        public float getHealth() {
-            return health;
-        }
-
-        public void setHealth(float health) {
-            this.health = health;
-        }
         /**
          * Updates the pig's sprite position to match the physics body.
          */
@@ -980,9 +788,6 @@ public class Level1Screen implements Screen {
          */
         public void render(SpriteBatch spriteBatch) {
             if (body != null) {
-                sprite.setPosition((body.getPosition().x * PPM) - (sprite.getWidth() / 2),
-                    (body.getPosition().y * PPM) - (sprite.getHeight() / 2));
-                sprite.setRotation((float) Math.toDegrees(body.getAngle()));
                 sprite.draw(spriteBatch);
             }
         }
@@ -998,7 +803,9 @@ public class Level1Screen implements Screen {
             sprite.getTexture().dispose();
         }
 
-
+        public float getHealth() {
+            return health;
+        }
 
         public void setHealth(int health) {
             this.health = health;

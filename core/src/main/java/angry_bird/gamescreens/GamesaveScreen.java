@@ -7,125 +7,128 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import static angry_bird.utils.Constants.UI.Gamesave.*;
 import static angry_bird.utils.Constants.UI.skin.BUTTON_SKIN;
 
+import com.badlogic.gdx.utils.Logger;
+
 public class GamesaveScreen implements Screen {
-    private Main main;
-
-    private Texture backgroundImage;
-    private Stage stage;
-
-    private TextButton newGame;
-    private TextButton loadGame;
+    private static final Logger logger = new Logger(GamesaveScreen.class.getName(), Logger.DEBUG);
+    private Main mainApp;
+    private Texture backgroundTexture;
+    private Stage uiStage;
+    private TextButton newGameButton;
+    private TextButton loadGameButton;
     private TextButton backButton;
+    private int a;
 
-    public GamesaveScreen(Main main){
-        this.main = main;
-        setupStage();
-        setupBackgroundImageAndButtons();
+    public GamesaveScreen(Main mainApp){
+        this.mainApp = mainApp;
+        initializeStage();
+        initializeUIComponents();
     }
 
-    private void setupStage(){
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+    private void initializeStage(){
+        uiStage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(uiStage);
     }
 
-    private void setupBackgroundImageAndButtons() {
-        backgroundImage = new Texture(BACKGROUND);
-
+    private void initializeUIComponents() {
+        backgroundTexture = new Texture(BACKGROUND);
         Skin skin = new Skin(Gdx.files.internal(BUTTON_SKIN));
 
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-        table.defaults().width(200).height(70).pad(100);
+        newGameButton = new TextButton("NEW GAME", skin);
+        loadGameButton = new TextButton("LOAD GAME", skin);
+        backButton = new TextButton("<", skin);
 
-        newGame = new TextButton("NEW GAME", skin);
-        loadGame = new TextButton("LOAD GAME", skin);
+        // Set button sizes
+        newGameButton.setSize(200, 100);
+        loadGameButton.setSize(200, 100);
+        backButton.setSize(70, 70);
 
-        table.add(newGame);
-        table.add(loadGame);
+        // Set button positions
+        newGameButton.setPosition(500, 450);
+        loadGameButton.setPosition(1200, 450);
+        backButton.setPosition(50, 950);
 
-        createBackButton(skin);
+        // Add buttons to the stage
+        uiStage.addActor(newGameButton);
+        uiStage.addActor(loadGameButton);
+        uiStage.addActor(backButton);
 
-        addListenerForButtons();
+        addEventListeners();
     }
 
-    private void createBackButton(Skin skin) {
-        this.backButton = new TextButton("<", skin);
-        stage.addActor(backButton);
-        backButton.setHeight(70);
-        backButton.setWidth(70);
-        backButton.setPosition(50,950);
-    }
-
-    private void addListenerForButtons() {
-        newGame.addListener(event -> {
-            if(newGame.isPressed()){
-                main.setScreen(new LevelSelectionScreen(main));
+    private void addEventListeners() {
+        newGameButton.addListener(event -> {
+            if(newGameButton.isPressed()){
+                a=0;
+                try {
+                    mainApp.setScreen(new Map_of_Levels(mainApp, a));
+                } catch (Exception e) {
+                    logger.error("Error transitioning to Map_of_Levels screen", e);
+                }
             }
             return true;
         });
 
-        loadGame.addListener(event -> {
-            if(loadGame.isPressed()){
-                main.setScreen(new LevelSelectionScreen(main));
+        loadGameButton.addListener(event -> {
+            if(loadGameButton.isPressed()){
+                a=1;
+                try {
+                    mainApp.setScreen(new Map_of_Levels(mainApp, 1));
+                } catch (Exception e) {
+                    logger.error("Error transitioning to Map_of_Levels screen", e);
+                }
             }
             return true;
         });
 
         backButton.addListener(event -> {
             if (backButton.isPressed()){
-                main.setScreen(new MainMenuScreen(main));
+                try {
+                    mainApp.setScreen(new MainMenuScreen(mainApp));
+                } catch (Exception e) {
+                    logger.error("Error transitioning to MainMenuScreen", e);
+                }
             }
             return true;
         });
     }
 
     @Override
-    public void show() {
-
-    }
+    public void show() {}
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        main.spriteBatch.begin();
-        main.spriteBatch.draw(backgroundImage, 0, 0);
-        main.spriteBatch.end();
+        mainApp.spriteBatch.begin();
+        mainApp.spriteBatch.draw(backgroundTexture, 0, 0);
+        mainApp.spriteBatch.end();
 
-        stage.act();
-        stage.draw();
+        uiStage.act();
+        uiStage.draw();
     }
 
     @Override
-    public void resize(int i, int i1) {
-
-    }
+    public void resize(int width, int height) {}
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
-
+        uiStage.dispose();
+        backgroundTexture.dispose();
     }
 }
